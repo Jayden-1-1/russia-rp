@@ -6,9 +6,9 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "RUSSIA RP — Digital Experience",
+  title: "MISS RP — Digital Experience",
   description:
-    "Цифровое пространство проекта Russia RP: авторизация, обзвоны, управление кандидатами.",
+    "Начинающий Roblox-проект по РП России: обзвоны, собеседования, комьюнити MISS RP.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

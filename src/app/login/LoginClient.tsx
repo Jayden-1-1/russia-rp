@@ -92,7 +92,7 @@ export default function LoginClient({
       <div className="w-full max-w-md">
         <a href="/" className="track hover:text-fog transition-colors">← На главную</a>
         <div className="mt-6 border border-line bg-panel p-8 rise">
-          <h1 className="text-2xl font-semibold tracking-tight">Вход в RUSSIA RP</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Вход в MISS RP</h1>
           <p className="mt-2 text-sm text-mist">
             Личный аккаунт проекта. Доступы выдаёт администрация.
           </p>

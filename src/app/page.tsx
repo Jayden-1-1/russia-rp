@@ -20,7 +20,7 @@ export default function Home() {
 
         {/* Верхняя техническая строка */}
         <header className="absolute top-0 inset-x-0 flex items-center justify-between px-6 sm:px-10 py-6 z-10">
-          <span className="track rise">RUSSIA RP</span>
+          <span className="track rise">MISS RP</span>
           <nav className="hidden sm:flex items-center gap-8">
             <a href="#auth" className="track hover:text-fog transition-colors">Вход</a>
             <Link href="/login" className="track hover:text-fog transition-colors">Ключ</Link>
@@ -28,28 +28,43 @@ export default function Home() {
           <span className="track hidden sm:inline rise">EST. 2026</span>
         </header>
 
-        {/* Центр: крупное приветствие */}
+        {/* Центр: логотип + приветствие */}
         <div className="relative z-10 text-center px-6">
-          <div className="rise">
+          {/* Логотип MISS RP */}
+          <div className="rise mx-auto mb-8 w-32 h-32 sm:w-40 sm:h-40 relative">
+            <div
+              className="absolute inset-0 rounded-full blur-3xl bg-[radial-gradient(circle,rgba(212,175,55,0.18),transparent_70%)]"
+              aria-hidden
+            />
+            <img
+              src="/logo-miss.png"
+              alt="Логотип MISS RP"
+              className="relative w-full h-full object-contain drop-shadow-[0_8px_32px_rgba(0,0,0,0.6)]"
+              style={{ animation: "logo-glow 4s ease-in-out infinite" }}
+            />
+          </div>
+          <div className="rise" style={{ animationDelay: "120ms" }}>
             <Greeting />
           </div>
           <h1
             className="mt-6 text-5xl sm:text-7xl lg:text-8xl font-semibold tracking-tight leading-[1.02] text-paper rise"
-            style={{ animationDelay: "120ms" }}
+            style={{ animationDelay: "200ms" }}
           >
-            RUSSIA RP
+            MISS RP
           </h1>
           <p
             className="mt-6 track !text-xs sm:!text-sm tracking-[0.5em] text-mist rise"
-            style={{ animationDelay: "240ms" }}
+            style={{ animationDelay: "320ms" }}
           >
             DIGITAL EXPERIENCE
           </p>
           <p
             className="mt-8 max-w-md mx-auto text-fog text-sm leading-relaxed rise"
-            style={{ animationDelay: "360ms" }}
+            style={{ animationDelay: "420ms" }}
           >
-            Цифровое пространство проекта — авторизация, обзвоны и управление в одном месте.
+            Мы — начинающий проект в Roblox по РП России. Проходим путь
+            от кандидата до полноценной роли в структуре: собеседования,
+            обзвоны и практика для билдеров-скриптеров.
           </p>
           <a
             href="#auth"
@@ -87,7 +102,7 @@ export default function Home() {
         <div className="absolute bottom-24 sm:bottom-28 inset-x-0 flex flex-col items-center gap-2 z-10 pointer-events-none">
           <div className="w-16 h-px bg-line-strong mb-2" aria-hidden />
           <p className="text-sm tracking-[0.45em] text-paper/90 font-semibold">
-            RUSSIA RP
+            MISS RP
           </p>
           <p className="track">DIGITAL EXPERIENCE</p>
         </div>
@@ -116,7 +131,7 @@ export default function Home() {
             <div className="rise">
               <p className="track">03 — Идентификация</p>
               <h2 className="mt-6 text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05]">
-                Войти в Russia RP
+                Войти в MISS RP
               </h2>
               <p className="mt-5 max-w-md text-mist leading-relaxed">
                 Вход по личному логину и паролю. Аккаунты и ключи-приглашения
@@ -142,7 +157,7 @@ export default function Home() {
       {/* ===== Технический низ ===== */}
       <footer className="border-t border-line relative">
         <div className="mx-auto max-w-6xl px-6 sm:px-10 py-10 flex flex-wrap gap-6 justify-between">
-          <span className="track">RUSSIA RP — DIGITAL EXPERIENCE</span>
+          <span className="track">MISS RP — DIGITAL EXPERIENCE</span>
           <span className="track">© 2026</span>
         </div>
       </footer>

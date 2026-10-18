@@ -22,7 +22,7 @@ export function AppShell({
         {/* Сайдбар */}
         <aside className="lg:w-60 shrink-0 border-b lg:border-b-0 lg:border-r border-line lg:min-h-dvh sticky top-0 lg:h-dvh bg-panel z-10">
           <div className="p-6 flex items-center justify-between">
-            <a href="/cabinet" className="track hover:text-fog transition-colors">RUSSIA RP</a>
+            <a href="/cabinet" className="track hover:text-fog transition-colors">MISS RP</a>
           </div>
           <nav className="px-3 pb-6 flex lg:flex-col gap-1 overflow-x-auto">{nav}</nav>
           <div className="hidden lg:block absolute bottom-0 inset-x-0 p-4 border-t border-line">

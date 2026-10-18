@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * 3D-сцена с фирменным логотипом Russia RP (оригинальное изображение «R» с триколором).
+ * 3D-сцена с фирменным логотипом MISS RP (наручники, звёзды, бейдж «RP»).
  *
  * Геометрия: логотип используется как текстура на ЭКСТРУДИРОВАННОЙ 3D-панели
  * (BoxGeometry) — у объекта настоящая толщина, грани, освещение и мягкие тени.
@@ -95,7 +95,7 @@ export default function LogoScene({ className }: { className?: string }) {
         // Текстура исходного логотипа на лицевую грань экструдированной панели
         const loader = new THREE.TextureLoader();
         loader.load(
-          "/logo-cropped.png",
+          "/logo-miss.png",
           (texture) => {
             texture.colorSpace = THREE.SRGBColorSpace;
             texture.anisotropy = isMobile ? 4 : 8;
@@ -238,8 +238,8 @@ export default function LogoScene({ className }: { className?: string }) {
       <div className={className ?? ""}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/logo-cropped.png"
-          alt="Логотип Russia RP"
+          src="/logo-miss.png"
+          alt="Логотип MISS RP"
           className="w-full h-full object-contain"
         />
       </div>
@@ -251,7 +251,7 @@ export default function LogoScene({ className }: { className?: string }) {
       {/* Статичный логотип виден сразу; 3D-канвас рисуется поверх после загрузки Three.js */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/logo-cropped.png"
+        src="/logo-miss.png"
         alt=""
         aria-hidden
         className="absolute inset-0 m-auto w-2/5 h-2/5 object-contain"
@@ -260,7 +260,7 @@ export default function LogoScene({ className }: { className?: string }) {
         ref={mountRef}
         className="absolute inset-0"
         role="img"
-        aria-label="Трёхмерная презентация логотипа Russia RP"
+        aria-label="Трёхмерная презентация логотипа MISS RP"
       />
     </div>
   );

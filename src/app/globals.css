@@ -156,6 +156,19 @@ html { scroll-behavior: smooth; }
 }
 
 /* Пульс точки ожидания */
+/* Пульс свечения логотипа MISS RP */
+@keyframes logo-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.6));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 12px 48px rgba(212, 175, 55, 0.35));
+    transform: scale(1.02);
+  }
+}
+
 @keyframes pulse-dot {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.6); opacity: 0.4; }
