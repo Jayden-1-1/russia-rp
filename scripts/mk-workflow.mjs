@@ -1,0 +1,23 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+
+mkdirSync(".github/workflows", { recursive: true });
+writeFileSync(
+  ".github/workflows/check-site.yml",
+  [
+    "name: Check site",
+    "on:",
+    "  workflow_dispatch:",
+    "jobs:",
+    "  check:",
+    "    runs-on: ubuntu-latest",
+    "    steps:",
+    "      - name: Curl site",
+    "        run: |",
+    "          code=$(curl -sS -o /tmp/site.html -w \"%{http_code}\" --max-time 60 https://miss-rp-game.up.railway.app) || true",
+    "          echo \"HTTP code: $code\"",
+    "          grep -c \"MISS RP\" /tmp/site.html || echo \"MISS RP NOT FOUND\"",
+    "          grep -c \"logo-miss.png\" /tmp/site.html || echo \"LOGO NOT FOUND\"",
+    "",
+  ].join("\n")
+);
+console.log("workflow created");
