@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RUSSIA RP — Digital Experience
 
-## Getting Started
+Система обзвонов и управления кадрами проекта Russia RP: локальные аккаунты, роли, ключи-приглашения, обзвоны с автопроверкой.
 
-First, run the development server:
+## Стек
+
+- **Next.js 16** (App Router, Turbopack) + TypeScript strict
+- **Prisma + SQLite** (модель данных: пользователи, роли, ключи, обзвоны)
+- **Three.js** — 3D-логотип на главной
+- Локальная авторизация: логин + пароль (scrypt), сессии в httpOnly cookie
+
+## Первый запуск
+
+1. `npm install`
+2. `npx prisma migrate deploy`
+3. `npx tsx scripts/seed-variants.ts` (роли + варианты вопросов)
+4. `npm run dev`
+
+Или одной кнопкой — `start.bat` (сам делает всё выше, находит свободный порт 3002–3300 и откроет браузер).
+
+## Аккаунт главного администратора
+
+Создаётся автоматически при первом открытии страницы входа:
+
+- Логин: `ROOT_LOGIN` (по умолчанию `admin`)
+- Пароль: `ROOT_PASSWORD` (по умолчанию `admin123`)
+
+Значения задаются в `.env`. Root-администратору доступны все возможности; пароль меняется в `.env` + удалением dev.db или через редактирование профиля.
+
+## Сценарий работы
+
+1. **Главный администратор** входит по логину/паролю → админ-панель.
+2. В разделе **Роли** создаёт роли (например «Билдер-скриптер», «Администратор игры») и настраивает матрицу прав.
+3. В разделе **Ключи** создаёт ключи-приглашения формата `RRP-XXXX-XXXX` (с ролью, лимитом активаций и сроком).
+4. Дальше два пути:
+   - **Профили**: админ сам создаёт аккаунты сотрудникам (логин, пароль, должность, роли).
+   - **Ключи**: кандидат на странице входа (вкладка «По ключу») сам регистрируется по коду.
+5. В разделе **Кандидаты** админ назначает обзвон по **направлению**:
+   - «Правила RP» (3 варианта × 31 вопрос)
+   - «Билдер-скриптер» (3 варианта × 25 вопросов)
+   - **Вариант выбирается случайно**, его имя скрыто ото всех — администратор не может подсказывать.
+6. Кандидат в «Мои обзвоны» видит **только** «ВЫ СЕЙЧАС ПРОХОДИТЕ ОБЗВОН» и мини-игру-раннер (аналог Chrome Dino). Ответы фиксирует администратор во время голосовой беседы.
+7. Администратор в **Результатах** оценивает каждый ответ 0 / 1 / 2 балла (правильные ответы видны только ему) и жмёт «Сохранить и проверить».
+8. Сайт **сам суммирует баллы и решает**: ≥ 25 баллов — «Вы приняты на должность», меньше — «Вы не приняты». Кандидат видит итог и баллы.
+
+## Структура админ-панели
+
+| Раздел | Назначение |
+|---|---|
+| Обзор | Метрики, последние сессии, журнал |
+| Профили | Создание аккаунтов, роли, должности, смена пароля, деактивация |
+| Ключи | Ключи-приглашения: создание, копирование, отключение |
+| Роли | Матрица доступа (права на разделы) |
+| Кандидаты | Назначение обзвонов по направлению |
+| Обзвоны | Мониторинг активных сессий |
+| Конструктор | Редактирование вопросов вариантов |
+| Результаты | Проверка ответов и оценивание (0–2 балла) |
+
+## Тесты
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx tsx scripts/test-scenarios.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+22 проверки: пароли (scrypt, соль), ключи (формат, лимиты, срок), роли и права, случайность вариантов, автопорог 25.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Безопасность
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Пароли — scrypt с уникальной солью; проверка timing-safe.
+- Сессии — httpOnly cookie, токен в БД, TTL настраивается.
+- Права проверяются **на сервере** при каждом запросе; frontend их только отображает.
+- Ключи: лимит активаций, срок действия, отключение; повторное использование блокируется.
+- Ответы принимаются один раз; повторные отправки отклоняются сервером.
+- Имя варианта обзвона не покидает сервер при назначении.

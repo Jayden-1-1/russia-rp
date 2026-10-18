@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local database
+*.db
+prisma/dev.db*
+/.agents
+/.claude
+/.devin
+/.cursor
+/.ruler
+/AGENTS.md

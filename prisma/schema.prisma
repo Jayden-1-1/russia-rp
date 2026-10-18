@@ -1,0 +1,292 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Пользователи и сессии (локальная авторизация) ----------
+
+model User {
+  id           String   @id @default(cuid())
+  login        String   @unique
+  passwordHash String
+  displayName  String?
+  position     String? // должность: "Билдер-скриптер", "Администратор игры" и т.п.
+  isRootAdmin  Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastSeenAt   DateTime @default(now())
+
+  sessions        Session[]
+  roleBindings    RoleBinding[]
+  callAssignments CallAssignment[]
+  examinerSessions CallSession[] @relation("ExaminerSessions")
+  decisions       CallDecision[]
+  stageGrades     StageGrade[]   @relation("StageGradeExaminer")
+  auditLogs       AuditLog[]
+  createdKeys     InviteKey[]   @relation("KeyCreator")
+  createdProfiles User[]        @relation("ProfileCreator")
+  createdById     String?
+  createdBy       User?         @relation("ProfileCreator", fields: [createdById], references: [id])
+
+  @@index([login])
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  token       String   @unique
+  userId      String
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  ip          String?
+  userAgent   String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+// ---------- Роли сайта и матрица доступа ----------
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique // "Билдер-скриптер", "Администратор игры"...
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  permissions RolePermission[]
+  bindings    RoleBinding[]
+  keys        InviteKey[]
+}
+
+model RolePermission {
+  id          String   @id @default(cuid())
+  roleId      String
+  capability  String
+  allowed     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, capability])
+}
+
+model RoleBinding {
+  id        String   @id @default(cuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+}
+
+// ---------- Ключи-приглашения ----------
+// Создаются админом: для регистрации профиля с ролью или для доступа к обзвону.
+
+model InviteKey {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  purpose     String    @default("profile") // profile | call
+  roleId      String?   // роль, выдаваемая по ключу (purpose=profile)
+  templateId  String?   // вариант обзвона, доступный по ключу (purpose=call) — обычно не задан: рандом
+  maxUses     Int       @default(1)
+  usedCount   Int       @default(0)
+  note        String?
+  createdById String
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime?
+  disabledAt  DateTime?
+
+  role       Role?          @relation(fields: [roleId], references: [id])
+  template   CallTemplate?  @relation(fields: [templateId], references: [id])
+  createdBy  User           @relation("KeyCreator", fields: [createdById], references: [id])
+
+  @@index([code])
+  @@index([roleId])
+}
+
+// ---------- Обзвоны: шаблоны (варианты) и вопросы ----------
+
+model CallTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  // категория направления: "rules" (правила RP) | "builder" (билдер-скриптер)
+  category    String   @default("rules")
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  questions   Question[]
+  sessions    CallSession[]  @relation("TemplateSessions")
+  assignments CallAssignment[]
+  keys        InviteKey[]
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  templateId  String
+  order       Int      @default(0)
+  text        String
+  type        String   @default("short_text")
+  timeLimitSec Int     @default(120)
+  required    Boolean  @default(true)
+  points      Int      @default(2)
+  criteria    String?
+  category    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  template    CallTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  answers     Answer[]
+
+  @@index([templateId])
+}
+
+// ---------- Обзвоны: назначения и сессии ----------
+
+model CallAssignment {
+  id          String    @id @default(cuid())
+  userId      String
+  templateId  String
+  assignedBy  String?
+  status      String    @default("assigned") // assigned | completed | cancelled
+  note        String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  user      User         @relation(fields: [userId], references: [id])
+  template  CallTemplate @relation(fields: [templateId], references: [id])
+  sessions  CallSession[]
+
+  @@index([userId])
+  @@index([templateId])
+}
+
+model CallSession {
+  id            String   @id @default(cuid())
+  assignmentId  String
+  templateId    String
+  examinerId    String?
+  status        String   @default("active")
+  // Этап: 1 = устный обзвон, 2 = практика (билдер-скриптер)
+  stage         Int      @default(1)
+  startedAt     DateTime @default(now())
+  finishedAt    DateTime?
+  cancelReason  String?
+  currentOrder  Int      @default(1)
+  // Этап 2: задание практики и дедлайн (1 час от старта этапа)
+  practiceTaskId String?
+  practiceStartedAt DateTime?
+  practiceDeadlineAt DateTime?
+  // Кандидат заявил готовность ко 2 туру
+  stage2ReadyAt  DateTime?
+
+  assignment  CallAssignment @relation(fields: [assignmentId], references: [id])
+  template    CallTemplate   @relation("TemplateSessions", fields: [templateId], references: [id])
+  examiner    User?          @relation("ExaminerSessions", fields: [examinerId], references: [id])
+  answers     Answer[]
+  decisions   CallDecision[]
+  stageGrades StageGrade[]
+  practiceTask PracticeTask? @relation(fields: [practiceTaskId], references: [id])
+
+  @@index([assignmentId])
+}
+
+// Оценки по турам: 1 тур (вопросы) и 2 тур (практика)
+model StageGrade {
+  id        String   @id @default(cuid())
+  sessionId String
+  stage     Int
+  totalScore Int
+  maxScore  Int
+  passed    Boolean
+  examinerId String
+  details   String
+  createdAt DateTime @default(now())
+
+  session  CallSession @relation(fields: [sessionId], references: [id])
+  examiner User        @relation("StageGradeExaminer", fields: [examinerId], references: [id])
+
+  @@unique([sessionId, stage])
+}
+
+// ---------- Практика (2 этап для билдеров-скриптеров) ----------
+
+model PracticeTask {
+  id        String   @id @default(cuid())
+  name      String
+  // category: builder — задания для Roblox Studio
+  category  String   @default("builder")
+  title     String
+  brief     String
+  requirements String
+  timeLimitMin Int   @default(60)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions  CallSession[]
+}
+
+model Answer {
+  id          String   @id @default(cuid())
+  sessionId   String
+  questionId  String
+  order       Int
+  status      String   @default("pending")
+  text        String?
+  boolValue   Boolean?
+  startedAt   DateTime?
+  deadlineAt  DateTime?
+  answeredAt  DateTime?
+  skippedAt   DateTime?
+
+  session CallSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question Question   @relation(fields: [questionId], references: [id])
+
+  @@unique([sessionId, questionId])
+  @@index([sessionId])
+}
+
+model CallDecision {
+  id        String   @id @default(cuid())
+  sessionId String
+  examinerId String
+  decision  String   // approved | rejected | revision
+  comment   String?
+  score     Int?
+  createdAt DateTime @default(now())
+
+  session  CallSession @relation(fields: [sessionId], references: [id])
+  examiner User        @relation(fields: [examinerId], references: [id])
+
+  @@index([sessionId])
+}
+
+// ---------- Журнал действий ----------
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String?
+  entityId  String?
+  details   String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([createdAt])
+}

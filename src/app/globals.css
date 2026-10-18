@@ -1,26 +1,170 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
+  --color-ink: #050505;
+  --color-panel: #0b0b0c;
+  --color-panel-2: #131316;
+  --color-line: #232326;
+  --color-line-strong: #3a3a3f;
+  --color-mist: #8a8a92;
+  --color-fog: #b4b4bc;
+  --color-paper: #f4f4f6;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #050505;
+  --foreground: #f4f4f6;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Тонкая сетка фона для внутренних страниц */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Трек-подпись (номера, метки) */
+.track {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-mist);
+}
+
+/* Видимый фокус для клавиатурной навигации */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 1px solid #f4f4f6;
+  outline-offset: 2px;
+}
+
+/* Появление при скролле */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rise {
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Индикатор прокрутки */
+@keyframes bob {
+  0%, 100% { transform: translateY(0); opacity: 0.9; }
+  50% { transform: translateY(6px); opacity: 0.4; }
+}
+.bob { animation: bob 2.2s ease-in-out infinite; }
+
+/* Плавная прокрутка между секциями */
+html { scroll-behavior: smooth; }
+
+/* Появление при скролле (через IntersectionObserver в Reveal) */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+              transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Тонкая полоса прогресса прокрутки */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 1px;
+  background: var(--color-paper);
+  opacity: 0.6;
+  z-index: 100;
+  width: 0;
+  transition: width 0.15s linear;
+}
+
+/* ===== Анимации обзвона ===== */
+
+/* Плашка «Ваш обзвон взял»: крупно в центре */
+.claim-badge {
+  border: 1px solid #3a3a3f;
+  background: #131316;
+  padding: 24px 32px;
+  z-index: 20;
+  transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.claim-badge-center {
+  position: relative;
+  margin: 80px auto 0;
+  max-width: 360px;
+  text-align: center;
+  transform: scale(1);
+  opacity: 1;
+  animation: claim-pop 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.claim-badge-corner {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  max-width: 240px;
+  padding: 10px 16px;
+  transform: scale(0.8);
+  opacity: 0.9;
+  animation: none;
+}
+.claim-badge-corner-static {
+  position: absolute;
+  top: -44px;
+  left: 0;
+  padding: 8px 14px;
+  border: 1px solid #26262a;
+  background: #131316;
+  opacity: 0.9;
+}
+@keyframes claim-pop {
+  from { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.05); opacity: 1; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Появление игры после плашки */
+.game-appear {
+  animation: game-appear 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: 0.2s;
+}
+@keyframes game-appear {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Технические подписи (track): мягкое появление */
+@keyframes track-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Пульс точки ожидания */
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.6); opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise, .bob { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto !important; }
+  .claim-badge-center, .game-appear { animation: none; }
+  .claim-badge { transition: none; }
 }
