@@ -8,9 +8,9 @@ import { randomBytes, scryptSync } from "node:crypto";
 const prisma = new PrismaClient();
 
 function hashPassword(password) {
-  const salt = randomBytes(16).toString("hex");
-  const hash = scryptSync(password, salt, 64).toString("hex");
-  return salt + ":" + hash;
+  const salt = randomBytes(16);
+  const hash = scryptSync(password, salt, 64);
+  return "scrypt:" + salt.toString("base64url") + ":" + hash.toString("base64url");
 }
 
 const ROLES = [
@@ -118,8 +118,12 @@ async function main() {
     });
     console.log("root admin created:", login);
   } else {
-    await prisma.user.update({ where: { id: rootUser.id }, data: { isRootAdmin: true } });
-    console.log("root admin ok:", login);
+    // Пересоздаём хеш (исправляет записанных с другим форматом)
+    await prisma.user.update({
+      where: { id: rootUser.id },
+      data: { isRootAdmin: true, passwordHash: hashPassword(password) },
+    });
+    console.log("root admin ok (hash refreshed):", login);
   }
 
   console.log("prod-init done");
