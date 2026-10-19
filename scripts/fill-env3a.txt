@@ -1,0 +1,9 @@
+  const clearAndType = async (el, text) => {
+    await el.evaluate((node) => {
+      const proto = node.tagName === "TEXTAREA" ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
+      const setter = Object.getOwnPropertyDescriptor(proto, "value").set;
+      setter.call(node, "");
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await el.type(text);
+  };

@@ -1,0 +1,27 @@
+  await new Promise((r) => setTimeout(r, 6000));
+  if (page.url().includes("/login")) {
+    console.log("SESSION LOST - relogin");
+    await page.type("input[name=email]", cred.email);
+    await page.type("input[name=password]", cred.password);
+    await page.click("button[type=submit]");
+    await new Promise((r) => setTimeout(r, 8000));
+    await page.goto("https://dashboard.render.com/web/new", { waitUntil: "networkidle2", timeout: 60000 });
+    await new Promise((r) => setTimeout(r, 4000));
+    await page.evaluate(() => {
+      const tab = [...document.querySelectorAll("button, a")].find((b) => b.textContent.trim().includes("Public Git Repository"));
+      if (tab) tab.click();
+    });
+    await new Promise((r) => setTimeout(r, 2000));
+    const urlInput = await page.$("input[type=text]");
+    if (urlInput) {
+      await urlInput.click({ clickCount: 3 });
+      await urlInput.type("https://github.com/Jayden-1-1/russia-rp");
+    }
+    await new Promise((r) => setTimeout(r, 3000));
+    await page.evaluate(() => {
+      const btn = [...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Connect");
+      if (btn) btn.click();
+    });
+    await new Promise((r) => setTimeout(r, 8000));
+  }
+  console.log("after connect URL:", page.url());

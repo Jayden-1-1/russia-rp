@@ -3,6 +3,12 @@ import LogoScene from "@/components/LogoScene";
 import Greeting from "@/components/Greeting";
 import AnimatedGrid from "@/components/AnimatedGrid";
 
+const FEATURES = [
+  { title: "Обзвоны", desc: "Устные собеседования с оценками в реальном времени" },
+  { title: "Практика", desc: "Задания по Roblox Studio для билдеров-скриптеров" },
+  { title: "Роли", desc: "Ключи-приглашения и матрица доступа администрации" },
+];
+
 export default function Home() {
   return (
     <main className="relative bg-ink overflow-x-clip">
@@ -11,8 +17,17 @@ export default function Home() {
         id="hero"
         className="relative min-h-dvh flex flex-col items-center justify-center overflow-hidden"
       >
-        {/* Фон: анимированная сетка (точки реагируют на курсор) */}
         <AnimatedGrid aria-hidden />
+        {/* Мягкий золотой ореол, медленно дрейфует */}
+        <div
+          className="absolute left-1/2 top-16 w-[70vw] h-[70vw] max-w-[640px] max-h-[640px] rounded-full blur-3xl pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(212,175,55,0.12) 0%, rgba(255,255,255,0.05) 45%, transparent 70%)",
+            animation: "halo-drift 9s ease-in-out infinite",
+          }}
+          aria-hidden
+        />
         <div
           className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_40%,rgba(255,255,255,0.05),transparent)]"
           aria-hidden
@@ -22,6 +37,7 @@ export default function Home() {
         <header className="absolute top-0 inset-x-0 flex items-center justify-between px-6 sm:px-10 py-6 z-10">
           <span className="track rise">MISS RP</span>
           <nav className="hidden sm:flex items-center gap-8">
+            <a href="#features" className="track hover:text-fog transition-colors">О проекте</a>
             <a href="#auth" className="track hover:text-fog transition-colors">Вход</a>
             <Link href="/login" className="track hover:text-fog transition-colors">Ключ</Link>
           </nav>
@@ -30,7 +46,6 @@ export default function Home() {
 
         {/* Центр: логотип + приветствие */}
         <div className="relative z-10 text-center px-6">
-          {/* Логотип MISS RP */}
           <div className="rise mx-auto mb-8 w-32 h-32 sm:w-40 sm:h-40 relative">
             <div
               className="absolute inset-0 rounded-full blur-3xl bg-[radial-gradient(circle,rgba(212,175,55,0.18),transparent_70%)]"
@@ -47,7 +62,7 @@ export default function Home() {
             <Greeting />
           </div>
           <h1
-            className="mt-6 text-5xl sm:text-7xl lg:text-8xl font-semibold tracking-tight leading-[1.02] text-paper rise"
+            className="mt-6 text-5xl sm:text-7xl lg:text-8xl font-semibold tracking-tight leading-[1.02] rise"
             style={{ animationDelay: "200ms" }}
           >
             MISS RP
@@ -66,19 +81,26 @@ export default function Home() {
             от кандидата до полноценной роли в структуре: собеседования,
             обзвоны и практика для билдеров-скриптеров.
           </p>
-          <a
-            href="#auth"
-            className="mt-10 inline-block rise border border-line-strong px-8 py-4 text-sm font-medium text-paper hover:bg-paper hover:text-ink transition-all duration-300"
-            style={{ animationDelay: "480ms" }}
-          >
-            Войти в проект
-          </a>
+          <div className="mt-10 flex flex-wrap gap-4 justify-center rise" style={{ animationDelay: "520ms" }}>
+            <a
+              href="#auth"
+              className="bg-paper text-ink px-8 py-4 text-sm font-medium hover:bg-fog hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(244,244,246,0.15)]"
+            >
+              Войти в проект
+            </a>
+            <a
+              href="#features"
+              className="border border-line-strong px-8 py-4 text-sm font-medium text-paper hover:bg-paper/5 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+            >
+              Что внутри
+            </a>
+          </div>
         </div>
 
         {/* Подсказка прокрутки */}
         <a
-          href="#scene"
-          aria-label="Прокрутить к 3D-логотипу"
+          href="#features"
+          aria-label="Прокрутить к преимуществам"
           className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-mist hover:text-paper transition-colors z-10"
         >
           <span className="track">Скролл</span>
@@ -88,17 +110,39 @@ export default function Home() {
         </a>
       </section>
 
-      {/* ===== Экран 2: 3D-логотип ===== */}
+      {/* ===== Экран 2: Преимущества ===== */}
+      <section id="features" className="relative border-t border-line scroll-mt-0">
+        <AnimatedGrid aria-hidden />
+        <div className="relative mx-auto max-w-6xl px-6 sm:px-10 py-24">
+          <p className="track">02 — Возможности</p>
+          <h2 className="mt-6 text-3xl sm:text-4xl font-semibold tracking-tight rise">
+            Внутри проекта
+          </h2>
+          <div className="mt-12 grid sm:grid-cols-3 gap-4">
+            {FEATURES.map((f, i) => (
+              <div
+                key={f.title}
+                className="border border-line bg-panel p-6 hover:border-line-strong hover:-translate-y-1 transition-all duration-300"
+                style={{ animation: "feature-in 0.7s ease-out both", animationDelay: 120 * (i + 1) + "ms" }}
+              >
+                <p className="track !text-[9px]">0{i + 1}</p>
+                <h3 className="mt-4 text-lg font-semibold tracking-tight">{f.title}</h3>
+                <p className="mt-2 text-sm text-mist leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Экран 3: 3D-логотип ===== */}
       <section
         id="scene"
         className="relative min-h-dvh flex items-center justify-center overflow-hidden scroll-mt-0"
       >
-        {/* 3D-сцена */}
         <div className="absolute inset-0">
           <LogoScene className="w-full h-full" />
         </div>
 
-        {/* Подпись под логотипом */}
         <div className="absolute bottom-24 sm:bottom-28 inset-x-0 flex flex-col items-center gap-2 z-10 pointer-events-none">
           <div className="w-16 h-px bg-line-strong mb-2" aria-hidden />
           <p className="text-sm tracking-[0.45em] text-paper/90 font-semibold">
@@ -107,10 +151,8 @@ export default function Home() {
           <p className="track">DIGITAL EXPERIENCE</p>
         </div>
 
-        {/* Номер секции */}
-        <span className="absolute top-6 right-6 sm:right-10 track z-10">02 / Логотип</span>
+        <span className="absolute top-6 right-6 sm:right-10 track z-10">03 / Логотип</span>
 
-        {/* Подсказка прокрутки */}
         <a
           href="#auth"
           aria-label="Прокрутить к авторизации"
@@ -123,13 +165,13 @@ export default function Home() {
         </a>
       </section>
 
-      {/* ===== Экран 3: Авторизация ===== */}
+      {/* ===== Экран 4: Авторизация ===== */}
       <section id="auth" className="relative border-t border-line scroll-mt-0">
         <AnimatedGrid aria-hidden />
         <div className="relative mx-auto max-w-6xl px-6 sm:px-10 py-24 sm:py-32 min-h-[70vh] flex items-center">
           <div className="grid sm:grid-cols-[1fr_auto] gap-12 sm:gap-20 items-end w-full">
             <div className="rise">
-              <p className="track">03 — Идентификация</p>
+              <p className="track">04 — Идентификация</p>
               <h2 className="mt-6 text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05]">
                 Войти в MISS RP
               </h2>

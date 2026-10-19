@@ -169,6 +169,38 @@ html { scroll-behavior: smooth; }
   }
 }
 
+/* Мягкое перетекание цветов аватара: золото → белый */
+@keyframes avatar-glow {
+  0%,
+  100% {
+    background: linear-gradient(135deg, rgba(212,175,55,0.9) 0%, rgba(212,175,55,0.25) 35%, rgba(255,255,255,0.9) 100%);
+    filter: drop-shadow(0 4px 18px rgba(212,175,55,0.15));
+  }
+  50% {
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(212,175,55,0.45) 50%, rgba(212,175,55,0.8) 100%);
+    filter: drop-shadow(0 6px 26px rgba(212,175,55,0.3));
+  }
+}
+
+/* Плавное появление карточек преимуществ */
+@keyframes feature-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Медленный дрейф градиентного ореола */
+@keyframes halo-drift {
+  0%,
+  100% { transform: translate(-50%, 0) scale(1); opacity: 0.7; }
+  50% { transform: translate(-50%, 24px) scale(1.08); opacity: 1; }
+}
+
 @keyframes pulse-dot {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.6); opacity: 0.4; }

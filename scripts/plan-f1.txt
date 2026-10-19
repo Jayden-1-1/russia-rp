@@ -1,0 +1,12 @@
+  // Бесплатный тариф: ищем кнопку плана Free
+  const freeClicked = await page.evaluate(() => {
+    const btns = [...document.querySelectorAll("button")];
+    const freeBtn = btns.find((b) => {
+      const t = b.textContent.trim();
+      return t.includes("Free") && t.includes("0.1 CPU") && t.length < 120;
+    });
+    if (freeBtn) { freeBtn.click(); return true; }
+    return false;
+  });
+  console.log("free clicked:", freeClicked);
+  await new Promise((r) => setTimeout(r, 2000));

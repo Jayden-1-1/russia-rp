@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Avatar from "./Avatar";
 
-/** Динамическое приветствие по локальному времени пользователя. */
+/** Динамическое приветствие по локальному времени пользователя + аватар проекта. */
 export function greetingFor(date: Date): { text: string; index: string } {
   const h = date.getHours();
   if (h >= 5 && h < 12) return { text: "Доброе утро", index: "01" };
@@ -22,8 +23,11 @@ export default function Greeting() {
 
   const current = g ?? { text: "Добро пожаловать", index: "00" };
   return (
-    <p className="track" aria-live="polite">
-      {current.index} / {current.text}
-    </p>
+    <div className="flex items-center gap-4 justify-center">
+      <Avatar size={56} />
+      <p className="track" aria-live="polite">
+        {current.index} / {current.text}
+      </p>
+    </div>
   );
 }

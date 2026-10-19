@@ -1,0 +1,34 @@
+  // === Переменные окружения (по индексам слотов) ===
+  const setEnvVar = async (idx, name, value) => {
+    await page.evaluate((idx, n, v) => {
+      const nameEl = document.querySelector("input[name=\"envVars." + idx + ".name\"]");
+      const valEl = document.querySelector("textarea[name=\"envVars." + idx + ".value\"]");
+      const nSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+      const vSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+      if (nameEl && valEl) {
+        nSetter.call(nameEl, n);
+        nameEl.dispatchEvent(new Event("input", { bubbles: true }));
+        vSetter.call(valEl, v);
+        valEl.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }, idx, name, value);
+  };
+  await setEnvVar(0, "DATABASE_URL", "file:/var/data/miss-rp.db");
+  console.log("env1 done");
+  const addVar = async () => {
+    await page.evaluate(() => {
+      const btn = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Add Environment Variable"));
+      if (btn) btn.click();
+    });
+    await new Promise((r) => setTimeout(r, 800));
+  };
+  await addVar();
+  await setEnvVar(1, "SESSION_SECRET", "bK3n74BaQI32L5XYccgW0MiiwIX4w7");
+  console.log("env2 done");
+  await addVar();
+  await setEnvVar(2, "ROOT_LOGIN", "admin");
+  console.log("env3 done");
+  await addVar();
+  await setEnvVar(3, "ROOT_PASSWORD", "admin123");
+  console.log("env4 done");
+  await new Promise((r) => setTimeout(r, 1500));

@@ -1,0 +1,6 @@
+  const allState = await page.evaluate(() => {
+    const inputs = [...document.querySelectorAll("input, textarea")].map((i) => ({ name: i.name, ph: i.placeholder.slice(0, 30), val: (i.value || "").slice(0, 50) }));
+    const errs = [...document.querySelectorAll("[class*=rror]")].map((e) => e.textContent.trim().slice(0, 120)).filter((t) => t.length > 5);
+    return { inputs, errs };
+  });
+  console.log("STATE:", JSON.stringify(allState, null, 1).slice(0, 3500));

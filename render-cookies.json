@@ -1,0 +1,44 @@
+[
+ {
+  "name": "__stripe_sid",
+  "value": "efe324d2-b148-47b9-b0c8-d9fb3cc035554ca1ab",
+  "domain": ".dashboard.render.com",
+  "path": "/",
+  "expires": 1792363337,
+  "size": 54,
+  "httpOnly": false,
+  "secure": true,
+  "session": false,
+  "sameSite": "Strict",
+  "priority": "Medium",
+  "sourceScheme": "Secure"
+ },
+ {
+  "name": "__render",
+  "value": "%7B%22originalReferrer%22%3A%22%22%2C%22id%22%3A%22usr-dbahedu1egvs73anr3d0%22%2C%22loggedInAsAdmin%22%3Afalse%7D",
+  "domain": ".render.com",
+  "path": "/",
+  "expires": 1823897536,
+  "size": 121,
+  "httpOnly": false,
+  "secure": true,
+  "session": false,
+  "sameSite": "Lax",
+  "priority": "Medium",
+  "sourceScheme": "Secure"
+ },
+ {
+  "name": "__stripe_mid",
+  "value": "a0390adb-8dc2-4309-9dca-0ff21b23f252d53c88",
+  "domain": ".dashboard.render.com",
+  "path": "/",
+  "expires": 1823897537,
+  "size": 54,
+  "httpOnly": false,
+  "secure": true,
+  "session": false,
+  "sameSite": "Strict",
+  "priority": "Medium",
+  "sourceScheme": "Secure"
+ }
+]

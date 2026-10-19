@@ -1,0 +1,5 @@
+  await page.goto("https://dashboard.render.com/", { waitUntil: "networkidle2", timeout: 60000 });
+  await new Promise((r) => setTimeout(r, 5000));
+  const svcText = await page.evaluate(() => document.body.textContent);
+  console.log("has miss-rp service:", svcText.includes("miss-rp"));
+  console.log("services text:", svcText.slice(300, 1200));

@@ -1,0 +1,18 @@
+    // Переключаемся на вкладку Public Git Repository и ждём поле URL
+    let urlField = null;
+    for (let tries = 0; tries < 10; tries++) {
+      await page.evaluate(() => {
+        const tab = [...document.querySelectorAll("button, a")].find((b) => b.textContent.trim().includes("Public Git Repository"));
+        if (tab) tab.click();
+      });
+      await new Promise((r) => setTimeout(r, 1000));
+      urlField = await page.$("input[placeholder^="https://github.com"]");
+      if (urlField) break;
+    }
+    if (urlField) {
+      await urlField.click({ clickCount: 3 });
+      await urlField.type("https://github.com/Jayden-1-1/russia-rp");
+      console.log("relogin: repo URL typed");
+    } else {
+      console.log("relogin: URL field NOT found");
+    }

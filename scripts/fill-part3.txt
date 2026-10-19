@@ -1,0 +1,30 @@
+  const addVar = async () => {
+    await page.evaluate(() => {
+      const btn = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Add Environment Variable"));
+      if (btn) btn.click();
+    });
+    await new Promise((r) => setTimeout(r, 800));
+  };
+  const setLastVar = async (name, value) => {
+    await page.type("input[placeholder=NAME_OF_VARIABLE]", name);
+    await page.evaluate((val) => {
+      const tas = [...document.querySelectorAll("textarea")];
+      const last = tas[tas.length - 1];
+      if (last) {
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+        setter.call(last, val);
+        last.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }, value);
+  };
+  await addVar();
+  await setLastVar("SESSION_SECRET", "bK3n74BaQI32L5XYccgW0MiiwIX4w7");
+  console.log("env2 done");
+  await addVar();
+  await setLastVar("ROOT_LOGIN", "admin");
+  console.log("env3 done");
+  await addVar();
+  await setLastVar("ROOT_PASSWORD", "admin123");
+  console.log("env4 done");
+  await new Promise((r) => setTimeout(r, 1000));
+  await page.screenshot({ path: "render-filled.png" });

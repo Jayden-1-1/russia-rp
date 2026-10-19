@@ -1,0 +1,6 @@
+  // === Бесплатный тариф ===
+  await page.evaluate(() => {
+    const show = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Show all"));
+    if (show) show.click();
+  });
+  await new Promise((r) => setTimeout(r, 1500));

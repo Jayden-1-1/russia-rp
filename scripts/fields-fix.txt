@@ -1,0 +1,6 @@
+  const nameEl = await page.$("input[name=serviceName]");
+  if (nameEl) await clearAndType(nameEl, "miss-rp");
+  const buildEl = await page.$("input[name=buildCommand]");
+  if (buildEl) await clearAndType(buildEl, "npm ci && npx prisma generate && npm run build");
+  const startEl = await page.$("input[name=startCommand]");
+  if (startEl) await clearAndType(startEl, "npx prisma migrate deploy && node scripts/prod-init.mjs && npm run start");

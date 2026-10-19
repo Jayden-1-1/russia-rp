@@ -1,0 +1,6 @@
+  const btnState = await page.evaluate(() => {
+    const btn = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Deploy web service"));
+    if (!btn) return null;
+    return { disabled: btn.disabled };
+  });
+  console.log("deploy btn:", JSON.stringify(btnState));

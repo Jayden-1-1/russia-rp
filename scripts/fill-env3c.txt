@@ -1,0 +1,17 @@
+  const addVar = async () => {
+    await page.evaluate(() => {
+      const btn = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Add Environment Variable"));
+      if (btn) btn.click();
+    });
+    await new Promise((r) => setTimeout(r, 1000));
+  };
+  await addVar();
+  await typeEnvByIndex(1, "SESSION_SECRET", "bK3n74BaQI32L5XYccgW0MiiwIX4w7");
+  console.log("env2 done");
+  await addVar();
+  await typeEnvByIndex(2, "ROOT_LOGIN", "admin");
+  console.log("env3 done");
+  await addVar();
+  await typeEnvByIndex(3, "ROOT_PASSWORD", "admin123");
+  console.log("env4 done");
+  await new Promise((r) => setTimeout(r, 1500));

@@ -1,0 +1,35 @@
+  // Переменные окружения: заполняем по позициям
+  const typeEnvByIndex = async (slot, name, value) => {
+    const nameInputs = await page.$$("input[placeholder=NAME_OF_VARIABLE]");
+    const valAreas = await page.$$("textarea");
+    console.log("slots:", nameInputs.length, valAreas.length);
+    const ni = nameInputs[slot];
+    const va = valAreas[slot];
+    if (ni && va) {
+      await ni.click({ clickCount: 3 });
+      await ni.type(name);
+      await va.click({ clickCount: 3 });
+      await va.type(value);
+    } else {
+      console.log("slot " + slot + " missing");
+    }
+  };
+  await typeEnvByIndex(0, "DATABASE_URL", "file:/var/data/miss-rp.db");
+  console.log("env1 done");
+  const addVar = async () => {
+    await page.evaluate(() => {
+      const btn = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Add Environment Variable"));
+      if (btn) btn.click();
+    });
+    await new Promise((r) => setTimeout(r, 1000));
+  };
+  await addVar();
+  await typeEnvByIndex(1, "SESSION_SECRET", "bK3n74BaQI32L5XYccgW0MiiwIX4w7");
+  console.log("env2 done");
+  await addVar();
+  await typeEnvByIndex(2, "ROOT_LOGIN", "admin");
+  console.log("env3 done");
+  await addVar();
+  await typeEnvByIndex(3, "ROOT_PASSWORD", "admin123");
+  console.log("env4 done");
+  await new Promise((r) => setTimeout(r, 1500));

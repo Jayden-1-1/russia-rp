@@ -1,0 +1,12 @@
+  await page.type("input[name=serviceName]", "miss-rp");
+  await page.evaluate(() => {
+    const el = document.querySelector("input[name=buildCommand]");
+    if (el) el.value = "";
+  });
+  await page.type("input[name=buildCommand]", "npm ci && npx prisma generate && npm run build");
+  const startEl = await page.$("input[name=startCommand]");
+  if (startEl) {
+    await startEl.click({ clickCount: 3 });
+    await startEl.type("npx prisma migrate deploy && node scripts/prod-init.mjs && npm run start");
+  }
+  console.log("commands filled");

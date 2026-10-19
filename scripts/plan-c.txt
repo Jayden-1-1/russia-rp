@@ -1,0 +1,9 @@
+  const clickedFree = await page.evaluate(() => {
+    const opts = [...document.querySelectorAll("button, [role=button], label")].filter((el) => el.textContent.trim().startsWith("Free"));
+    if (opts.length) { opts[opts.length - 1].click(); return true; }
+    return false;
+  });
+  console.log("clicked free:", clickedFree);
+  await new Promise((r) => setTimeout(r, 2000));
+  const priceText = await page.evaluate(() => document.body.textContent.slice(-400));
+  console.log("price area:", priceText.slice(-250));

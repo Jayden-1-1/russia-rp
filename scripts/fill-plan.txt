@@ -1,0 +1,11 @@
+  // === Бесплатный тариф ===
+  await page.evaluate(() => {
+    const show = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Show all"));
+    if (show) show.click();
+  });
+  await new Promise((r) => setTimeout(r, 1000));
+  await page.evaluate(() => {
+    const free = [...document.querySelectorAll("button, [role=button]")].filter((el) => el.textContent.trim().startsWith("Free"));
+    if (free.length) free[free.length - 1].click();
+  });
+  await new Promise((r) => setTimeout(r, 1000));

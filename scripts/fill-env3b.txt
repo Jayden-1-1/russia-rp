@@ -1,0 +1,14 @@
+  const typeEnvByIndex = async (slot, name, value) => {
+    const nameInputs = await page.$$("input[placeholder=NAME_OF_VARIABLE]");
+    const valAreas = await page.$$("textarea");
+    const ni = nameInputs[slot];
+    const va = valAreas[slot];
+    if (ni && va) {
+      await clearAndType(ni, name);
+      await clearAndType(va, value);
+    } else {
+      console.log("slot " + slot + " missing");
+    }
+  };
+  await typeEnvByIndex(0, "DATABASE_URL", "file:/var/data/miss-rp.db");
+  console.log("env1 done");

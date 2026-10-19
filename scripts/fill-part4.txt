@@ -1,0 +1,9 @@
+  // ДЕПЛОЙ
+  await page.evaluate(() => {
+    const btn = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Deploy web service"));
+    if (btn) btn.click();
+  });
+  console.log("DEPLOY CLICKED");
+  await new Promise((r) => setTimeout(r, 15000));
+  console.log("deploy URL:", page.url());
+  await page.screenshot({ path: "render-deploying.png" });

@@ -1,0 +1,4 @@
+  const planOptions = await page.evaluate(() => {
+    return [...document.querySelectorAll("button, [role=button], label, div")].map((el) => el.textContent.trim()).filter((t) => t.includes("Free") && t.length < 80);
+  });
+  console.log("FREE OPTIONS:", JSON.stringify([...new Set(planOptions)].slice(0, 10)));

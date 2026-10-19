@@ -1,0 +1,9 @@
+  await new Promise((r) => setTimeout(r, 5000));
+  const errs = await page.evaluate(() => {
+    const els = [...document.querySelectorAll("[role=alert], .error")];
+    return els.map((e) => e.textContent.trim().slice(0, 150)).filter((t) => t.length > 3);
+  });
+  console.log("FORM ERRORS:", JSON.stringify(errs));
+  const bodyAll = await page.evaluate(() => document.body.textContent);
+  const di = bodyAll.indexOf("Deploy web service");
+  console.log("around deploy:", bodyAll.slice(Math.max(0, di - 300), di + 200));

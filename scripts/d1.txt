@@ -1,0 +1,19 @@
+  // ДЕПЛОЙ — ждём активацию кнопки
+  let deployed = false;
+  for (let tries = 0; tries < 10 && !deployed; tries++) {
+    const btnInfo = await page.evaluate(() => {
+      const all = [...document.querySelectorAll("button")];
+      const btn = all.find((b) => b.textContent.includes("Deploy web service"));
+      return btn ? { disabled: btn.disabled, idx: all.indexOf(btn) } : null;
+    });
+    if (btnInfo && !btnInfo.disabled) {
+      const btns = await page.$$("button");
+      if (btns[btnInfo.idx]) {
+        await btns[btnInfo.idx].click();
+        deployed = true;
+      }
+    } else {
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
+  console.log("deploy click sent:", deployed);

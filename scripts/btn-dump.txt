@@ -1,0 +1,6 @@
+  const btnsAll = await page.evaluate(() => {
+    return [...document.querySelectorAll("button")].map((b) => b.textContent.trim().slice(0, 50)).filter((t) => t.length > 0);
+  });
+  console.log("ALL BUTTONS:", JSON.stringify(btnsAll));
+  const price = await page.evaluate(() => document.body.textContent.slice(-300));
+  console.log("PRICE AREA:", price.slice(-200));

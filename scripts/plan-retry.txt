@@ -1,0 +1,17 @@
+  let freeOk = false;
+  for (let tries = 0; tries < 15 && !freeOk; tries++) {
+    freeOk = await page.evaluate(() => {
+      const show = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Show all"));
+      if (show) show.click();
+      const btns = [...document.querySelectorAll("button, [role=button]")];
+      const freeBtn = btns.find((b) => {
+        const t = b.textContent.trim();
+        return t.includes("Free") && t.includes("0.1 CPU");
+      });
+      if (freeBtn) { freeBtn.click(); return true; }
+      return false;
+    });
+    if (!freeOk) await new Promise((r) => setTimeout(r, 1500));
+  }
+  console.log("free clicked:", freeOk);
+  await new Promise((r) => setTimeout(r, 2000));

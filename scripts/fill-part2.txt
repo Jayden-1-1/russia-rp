@@ -1,0 +1,6 @@
+  await page.type("input[placeholder=NAME_OF_VARIABLE]", "DATABASE_URL");
+  const envVal = await page.$("textarea[name="envVars.0.value"]");
+  if (envVal) {
+    await envVal.type("file:/var/data/miss-rp.db");
+  }
+  console.log("env1 done");

@@ -1,0 +1,18 @@
+  // Ждём поле публичного репозитория
+  let urlInput = null;
+  for (let tries = 0; tries < 10; tries++) {
+    urlInput = await page.$("input[placeholder^=\"https://github.com\"]");
+    if (urlInput) break;
+    await page.evaluate(() => {
+      const tab = [...document.querySelectorAll("button, a, [role=tab]")].find((b) => b.textContent.trim().includes("Public Git Repository"));
+      if (tab) tab.click();
+    });
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+  if (urlInput) {
+    await urlInput.click({ clickCount: 3 });
+    await urlInput.type("https://github.com/Jayden-1-1/russia-rp");
+    console.log("repo URL typed");
+  } else {
+    console.log("URL FIELD NOT FOUND");
+  }
